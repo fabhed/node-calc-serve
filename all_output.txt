@@ -1,0 +1,94 @@
+To create a calculator server with Node.js on port 8000, we will need the following files:
+
+1. `package.json`: This file will contain the project metadata and dependencies.
+2. `server.js`: This file will be the entry point of our application. It will create an HTTP server and define the routes for our calculator operations.
+3. `calculator.js`: This file will contain the Calculator class with methods for different mathematical operations.
+
+Let's start with the `package.json` file. This file will contain the project metadata and dependencies. We will use the `express` package to create our server and define routes.
+
+`package.json`
+```json
+{
+  "name": "calculator-server",
+  "version": "1.0.0",
+  "description": "A simple calculator server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+```
+
+Next, let's create the `calculator.js` file. This file will contain the Calculator class with methods for different mathematical operations.
+
+`calculator.js`
+```javascript
+class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  subtract(a, b) {
+    return a - b;
+  }
+
+  multiply(a, b) {
+    return a * b;
+  }
+
+  divide(a, b) {
+    if (b === 0) {
+      throw new Error("Cannot divide by zero");
+    }
+    return a / b;
+  }
+}
+
+module.exports = Calculator;
+```
+
+Finally, let's create the `server.js` file. This file will be the entry point of our application. It will create an HTTP server and define the routes for our calculator operations.
+
+`server.js`
+```javascript
+const express = require('express');
+const Calculator = require('./calculator');
+
+const app = express();
+const calculator = new Calculator();
+
+app.use(express.json());
+
+app.post('/add', (req, res) => {
+  const { a, b } = req.body;
+  res.json({ result: calculator.add(a, b) });
+});
+
+app.post('/subtract', (req, res) => {
+  const { a, b } = req.body;
+  res.json({ result: calculator.subtract(a, b) });
+});
+
+app.post('/multiply', (req, res) => {
+  const { a, b } = req.body;
+  res.json({ result: calculator.multiply(a, b) });
+});
+
+app.post('/divide', (req, res) => {
+  const { a, b } = req.body;
+  try {
+    res.json({ result: calculator.divide(a, b) });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.listen(8000, () => {
+  console.log('Server is running on port 8000');
+});
+```
+
+To run the server, you can use the `npm start` command. The server will start on port 8000 and you can make POST requests to the `/add`, `/subtract`, `/multiply`, and `/divide` routes with a JSON body containing `a` and `b` properties.
